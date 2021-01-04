@@ -1,40 +1,34 @@
-#include "stdlib.h";
-#include <stdio.h>;
-#include <ctype.h>;
-#include <string.h>;
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include "inputs.h"
 
-int* password_validator(const char pw[2][40]){
-	int min;
-	int max;
-	int result[2];
+int valid_pws(char pw[1000][45]){
+	unsigned min;
+	unsigned max;
 	char searched_letter;
-	
-	for (int j = 0;j < 2;j++){
+	int valids = 0;
+
+	for (int j = 0;j < 1000;j++){
 		long length = strlen(pw[j]);
-		int occ = 0;
+		int occ = -1; //bc when you count go through the whole string you have to neglect the searched_letter-identifier
+		sscanf(pw[j],"%u-%u %c: \n", &min, &max, &searched_letter);
 		for (int i = 0;i < length;i++){
-			if (pw[j][i] == '-'){
-				min = pw[j][i-1] - '0';
-				max = pw[j][i+1]- '0';
-			}
-			if (pw[j][i] == ':'){
-				searched_letter = pw[j][i-1];
-			}
 			if (pw[j][i] == searched_letter){
 				occ++;
 			}
-			result[j] = occ;
+		}
+		if (max >= occ && min <= occ){
+			valids++;
 		}
 	}
-	printf("%d\n",result[0]);
-	return result;
+	return valids;
 }
 
 
 int main(){
-	char password_array[2][40] =  {"2-7 a: aaaghd","1-9 c: cccchgda"};
-	int *erg = password_validator(password_array);
-	printf("first: %d\nsecond: %d\n",erg[0],erg[1]);
-
+	int valid_passwords = valid_pws(inputs);
+	printf("%u\n",valid_passwords);
+	
 	return 0;
 }
