@@ -1,5 +1,6 @@
 #include "inputs.h"
 #include <stdio.h>
+#include <string.h>
 
 #define HEIGHT 324
 #define WIDTH 32
@@ -16,17 +17,19 @@ int treesDifferentSlopes(char input[HEIGHT][WIDTH]){
             {1,2}
     };
     int len = sizeof(slopes)/sizeof(slopes[0]);
+    int rowLength = strlen(input[0]);
 
     for (int i = 0; i < len;i++){
         char path;
         int treeCount = 0;
-        int col,row = 0;
+        int row = 0;
+        int col = 0;
 
         while (row < HEIGHT){
             col += slopes[i][0];
             row += slopes[i][1];
 
-            path = input[row][col % 31];
+            path = input[row][col % rowLength];
             if (path == '#'){
                 treeCount++;
             }
