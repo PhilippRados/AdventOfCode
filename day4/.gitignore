@@ -1,2 +1,6 @@
 a.out
 a.out.dSYM
+part1.o
+part2.o
+shared.o
+sharedOut
