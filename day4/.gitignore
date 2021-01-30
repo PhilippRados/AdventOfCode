@@ -4,3 +4,5 @@ part1.o
 part2.o
 shared.o
 sharedOut
+newOut
+
