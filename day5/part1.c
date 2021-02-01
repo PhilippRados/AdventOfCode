@@ -25,7 +25,7 @@ int getSeatColumn(int lower, int upper){
 }
 
 int getSeatRow(int lower, int upper){
-	while (strlen(ptr) > 4){
+	while (strlen(ptr) > 5){
 		if (*ptr == 'F'){
 			upper = (upper + lower) / 2;
 		} else if (*ptr == 'B'){
