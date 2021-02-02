@@ -4,5 +4,5 @@
 #define ARRLEN 288 // result from countBlankLines-function
 
 extern int isBlank(char*);
-extern int countBlankLines(FILE*);
-extern void splitPassports(FILE*);
+extern int countBlankLines(char*);
+extern char **splitElements(char*,int);

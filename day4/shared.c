@@ -1,5 +1,6 @@
 #include "shared.h"
 #include <stdbool.h>
+#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -13,13 +14,13 @@ int isBlank(char* line){
 }
 
 
-int countBlankLines(FILE* file_to_read){
+int countBlankLines(char *filename){
     char str[80];
     int blankLines = 0;
     int i = 0;
-
-    while (i < FILELENGTH){
-        if (fgets(str,80, file_to_read) && isBlank(str)){
+    FILE* file_to_read = fopen(filename,"r");
+    while (fgets(str,80, file_to_read) != NULL){
+        if (isBlank(str)){
             blankLines++;
         }
         i++;
@@ -27,16 +28,17 @@ int countBlankLines(FILE* file_to_read){
     return blankLines; 
 }
 
-
-char* element_arr[ARRLEN]; // have to hardcode since element_arr[countPassports(file_to_read) doesnt work in static memory
-void splitPassports(FILE* file_to_read){
+/*char* element_arr[ARRLEN]; // have to hardcode since element_arr[countPassports(file_to_read) doesnt work in static memory*/
+char **splitElements(char *filename,int len){
+    FILE *file_to_read = fopen(filename, "r");
+    char **element_arr = malloc(sizeof(char*)*(len+1));
     char element[500];
     char str[80];
     int i = 0;
     int j = 0;
     
-    while(j < FILELENGTH){
-        if (fgets(str,80, file_to_read) && !isBlank(str)){
+    while(fgets(str,80, file_to_read) != NULL){
+        if (!isBlank(str)){
             strcat(element,str);
         }else {
             element_arr[i] = (char*)malloc(sizeof(char) * (strlen(element)+1));
@@ -47,4 +49,5 @@ void splitPassports(FILE* file_to_read){
         j++;
     }
 	fclose(file_to_read);
+    return element_arr;
 }

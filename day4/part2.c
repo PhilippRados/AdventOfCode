@@ -149,7 +149,7 @@ int main(){
     int valid_passports;
     FILE* file_to_read = fopen(FILENAME,"r");
 
-    splitPassports(file_to_read);
+    splitElements(file_to_read);
     valid_passports = validatePassports();
 
     printf("Valids: %d\n", valid_passports);
