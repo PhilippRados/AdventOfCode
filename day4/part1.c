@@ -28,9 +28,9 @@ int validatePassports(char **element_arr,int len){
 
 int main(){
     int valid_passports;
-    /*FILE* file_to_read = fopen(FILENAME,"r");*/
-    int arr_len = countBlankLines(FILENAME);
-    char **element_arr = splitElements(FILENAME,arr_len);
+    FILE* file_to_read = fopen(FILENAME,"r");
+    int arr_len = countBlankLines(file_to_read);
+    char **element_arr = splitElements(file_to_read,arr_len);
     valid_passports = validatePassports(element_arr,arr_len);
 
     printf("Valids: %d\n", valid_passports);

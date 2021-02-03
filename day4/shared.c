@@ -14,11 +14,12 @@ int isBlank(char* line){
 }
 
 
-int countBlankLines(char *filename){
+int countBlankLines(FILE* file_to_read){
+    rewind(file_to_read);
     char str[80];
     int blankLines = 0;
     int i = 0;
-    FILE* file_to_read = fopen(filename,"r");
+
     while (fgets(str,80, file_to_read) != NULL){
         if (isBlank(str)){
             blankLines++;
@@ -28,9 +29,8 @@ int countBlankLines(char *filename){
     return blankLines; 
 }
 
-/*char* element_arr[ARRLEN]; // have to hardcode since element_arr[countPassports(file_to_read) doesnt work in static memory*/
-char **splitElements(char *filename,int len){
-    FILE *file_to_read = fopen(filename, "r");
+char **splitElements(FILE* file_to_read,int len){
+    rewind(file_to_read);
     char **element_arr = malloc(sizeof(char*)*(len+1));
     char element[500];
     char str[80];
