@@ -476,7 +476,7 @@ drab gold bags contain 3 muted olive bags, 3 plaid purple bags.
 clear red bags contain 5 vibrant white bags.
 mirrored tomato bags contain 1 dim purple bag, 5 posh fuchsia bags, 3 striped turquoise bags, 2 posh gray bags.
 faded crimson bags contain 4 dark olive bags, 3 dull bronze bags, 4 faded blue bags, 4 wavy chartreuse bags.
-faded indigo bags contain 4 vibrant lavender bags.
+findigo bags contain 4 vibrant lavender bags.
 pale plum bags contain 1 posh lavender bag, 2 dotted gold bags, 1 bright magenta bag, 4 dull gray bags.
 plaid plum bags contain 2 posh fuchsia bags, 5 bright lime bags, 2 vibrant gold bags, 2 muted gray bags.
 bright tan bags contain 3 dotted magenta bags.

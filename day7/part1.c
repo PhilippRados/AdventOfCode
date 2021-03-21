@@ -1,29 +1,37 @@
+// Turns out I misunderstood the challenge and used hashTables for no reason
+// but I really don't want to restart this little challenge so I'll just
+// roll with it -> at least I learned a lot about hashing and dynamic memory :)
+
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/stat.h>
-#include <assert.h>
 
 #define LINE_LENGTH 100
 #define FILE_NAME "./inputs.txt"
 #define FILE_LENGTH 595
+#define TABLE_LENGTH (2 * FILE_LENGTH)
+
 // a hash-map is probably most convenient way to search for an element
 typedef struct bagInfo{
 	char* holding_bag;
 	char** bags_contained;
+	struct bagInfo *next;
 } bagInfo;
 
-bagInfo *hashTable[FILE_LENGTH];
+bagInfo *hashTable[TABLE_LENGTH];
 
-int hashFunction(char* holding_bag){
-	unsigned hashval;
+ int hashFunction(char *str)
+{
+	unsigned int hash = 5381;
+	int c;
 
-	for (hashval = 0; *holding_bag != '\0'; holding_bag++){
-		hashval = *holding_bag + 31 * hashval;
-	}
-	return hashval % FILE_LENGTH;
+	while ((c = *str++))
+		hash = ((hash << 5) + hash) + c;
+
+	return hash % TABLE_LENGTH;
 }
 
 int lookup(char* holding_bag){
@@ -31,12 +39,18 @@ int lookup(char* holding_bag){
 }
 
 void insert(bagInfo *bag){
+	bagInfo *root = hashTable[hashFunction(bag->holding_bag)];
 	if (hashTable[hashFunction(bag->holding_bag)] != NULL){
-		printf("duplicate: %s and %s at pos:%d \n", bag->holding_bag,hashTable[hashFunction(bag->holding_bag)]->holding_bag,hashFunction(bag->holding_bag));
+		bagInfo *ptr = hashTable[hashFunction(bag->holding_bag)];
+		while (ptr->next != NULL){
+			ptr = ptr->next;	
+		}
+		ptr->next = bag;
+		hashTable[hashFunction(bag->holding_bag)] = root;
+	} else {
+		hashTable[hashFunction(bag->holding_bag)] = (bagInfo*)malloc(sizeof(*bag)+1);
+		memcpy(hashTable[hashFunction(bag->holding_bag)],bag, sizeof(*bag)+1);
 	}
-
-	hashTable[hashFunction(bag->holding_bag)] = (bagInfo*)malloc(sizeof(*bag)+1);
-	memcpy(hashTable[hashFunction(bag->holding_bag)],bag, sizeof(*bag)+1);
 }
 
 char** splitFile(FILE* file_to_read){
@@ -86,6 +100,7 @@ bagInfo splitArrayIntoBagInfo(struct multiple_returns *bag){
 	int len = 0;
 	bagInfo single_bag;
 	single_bag.holding_bag = bag->first;
+	single_bag.next = NULL;
 	single_bag.bags_contained = malloc(sizeof(char*) * (strlen(bag->second)+1));
 	
 	single_bag.bags_contained[0] = ptr;
@@ -97,16 +112,32 @@ bagInfo splitArrayIntoBagInfo(struct multiple_returns *bag){
 }
 
 void checkTable(int pos){
-	for (int i = 0; *(hashTable[pos]->bags_contained) != NULL; (hashTable[pos]->bags_contained)++){
-		printf("%s\n",*(hashTable[pos]->bags_contained));
+	bagInfo *ptr = hashTable[pos];
+	while (ptr != NULL){
+		printf("%s -> ",ptr->holding_bag);
+		ptr = ptr->next;
 	}
+	printf("\n");
 }
 
-int countContainedBags(char* bag_color, int result){
-	lookup(bag_color);
-	return 0;
+int countContainedBags(char* bag_color,int sum){
+	int helper = 0;
 
+	for (int i = 0; i < TABLE_LENGTH;i++){
+		bagInfo *ptr = hashTable[i];
+		while (ptr != NULL){
+			for (;*(ptr->bags_contained) != NULL;(ptr->bags_contained)++)
+				if (strstr(*(ptr->bags_contained),bag_color) != NULL){
+					sscanf(*(ptr->bags_contained),"%d",&helper);
+					sum += helper;
+					countContainedBags(ptr->holding_bag,sum);
+				}
+			ptr = ptr->next;
+		}
+	}
+	return sum;
 }
+
 int main(){
 	FILE* file = fopen(FILE_NAME,"r");
 
@@ -120,8 +151,6 @@ int main(){
 		insert(&splitted_bag);
 		element_arr++;
 	}
-	printf("%d\n",hashFunction("striped fuchsia"));
-	printf("%d\n",hashFunction("vibrant gold"));
-
-	checkTable(83);
+	int result = countContainedBags("shiny gold",0);
+	printf("part1: %d\n",result);
 }
