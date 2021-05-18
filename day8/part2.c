@@ -10,6 +10,19 @@ typedef struct operation {
     int visits;
 } operation;
 
+
+operation ** copyArray(operation *element_arr[FILE_LENGTH]){
+    operation **copied_array = malloc(FILE_LENGTH * sizeof(*element_arr));
+
+    for (int i = 0; i < FILE_LENGTH; i++){
+        copied_array[i] = (operation*)malloc(sizeof(operation)+1);
+        copied_array[i]->action = (char*)malloc(strlen(element_arr[i]->action));
+        strcpy(copied_array[i]->action,element_arr[i]->action);
+        copied_array[i]->visits = 0;
+    }
+    return copied_array;
+}
+
 int findSecondExecutionAction(operation *element_arr[FILE_LENGTH]){
     int acc = 0;
     char command[4];
@@ -27,12 +40,41 @@ int findSecondExecutionAction(operation *element_arr[FILE_LENGTH]){
                 acc += (sign == '+') ? number : -number;
             }
         } else {
-            return acc;
+            return -1;
         }
     }
     return acc;
 }
 
+int part2(operation *element_arr[FILE_LENGTH]){
+    char command[4];
+    char sign;
+    int number;
+    int result;
+    operation** copy;
+
+    for (int i = 0; i < FILE_LENGTH; i++){
+        sscanf(element_arr[i]->action, "%s %c%d\n", command,&sign,&number);
+        if(strcmp(command,"jmp") == 0){
+            copy = copyArray(element_arr);
+            sprintf(copy[i]->action,"nop %c%d\n",sign,number);
+
+            result = findSecondExecutionAction(copy);
+            if(result != -1){
+                return result;
+            }
+        } else if(strcmp(command,"nop") == 0){
+            copy = copyArray(element_arr);
+            sprintf(copy[i]->action,"jmp %c%d\n",sign,number);
+
+            result = findSecondExecutionAction(copy);
+            if(result != -1){
+                return result;
+            }
+        }
+    }
+    return -1;
+}
 
 int main(){
     FILE *file_to_read = fopen(PATH,"r"); 
@@ -49,8 +91,10 @@ int main(){
         i++;
     }
 
-    int result = findSecondExecutionAction(element_arr);
-    printf("part1 answer: %d\n",result);
+    int result = part2(element_arr);
+    printf("part2 answer: %d\n",result);
 
+
+    /*free(element_arr);*/
 	fclose(file_to_read);
 }
