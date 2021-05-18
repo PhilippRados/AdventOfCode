@@ -94,7 +94,5 @@ int main(){
     int result = part2(element_arr);
     printf("part2 answer: %d\n",result);
 
-
-    /*free(element_arr);*/
 	fclose(file_to_read);
 }
