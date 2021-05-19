@@ -58,6 +58,24 @@ long findFirstViolation(long *num_arr){
     return -1;
 }
 
+int findSumOfViolation(long *num_arr,long violation){
+    long sum = 0;
+    int min,max;
+
+    for (int i = 0; i < FILE_LENGTH; i++){
+        min = num_arr[i];
+        max = num_arr[i];
+        for (int j = i; sum <= violation; j++){
+            min = (num_arr[j] < min) ? num_arr[j] : min;
+            max = (num_arr[j] > max) ? num_arr[j] : max;
+            sum += num_arr[j];
+            if (sum == violation)
+                return min + max;
+        } 
+        sum = 0;
+    }
+    return -1;
+}
 
 int main(){
     long input_arr[FILE_LENGTH];
@@ -70,6 +88,9 @@ int main(){
         i++;
     }
 
-    long result = findFirstViolation(input_arr);
-    printf("part1: %lu\n",result);
+    long part1 = findFirstViolation(input_arr);
+    printf("part1: %lu\n",part1);
+
+    int part2 = findSumOfViolation(input_arr, part1);
+    printf("part2: %d\n",part2);
 }
